@@ -377,7 +377,7 @@ class SchemaNode:
     @property
     def kw_deprecated(self) -> Optional["SchemaNode"]:
         return self.get_keyword(SchemaKeyword.DEPRECATED)
-    
+
     @property
     def kw_pattern_properties(self) -> Optional["SchemaNode"]:
         return self.get_keyword(SchemaKeyword.PATTERN_PROPERTIES)

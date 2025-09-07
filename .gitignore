@@ -153,3 +153,4 @@ tmp
 
 # npm stuff
 node_modules/
+/docs/examples/*

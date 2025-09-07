@@ -33,6 +33,7 @@ FileLikeType = Union[TextIO, TextIOWrapper, FileIO]
 
 
 class DocumentationTemplate(Enum):
+    BS5 = "bs5"
     FLAT = "flat"
     JS = "js"
     JS_OFFLINE = "js_offline"
@@ -47,8 +48,10 @@ class DocumentationTemplate(Enum):
             return "md"
         return "html"
 
-
-DEFAULT_TEMPLATE_FILE_NAME = "base.html"
+BS5_CSS_FOLDER = ["css"]
+BS5_FONT_FOLDER = ["css/font"]
+BS5_THEMES_FOLDER = ["css/themes"]
+BS5_JS_FOLDER = ["js"]
 
 DEFAULT_CSS_FILE_NAME = "schema_doc.css"
 DEFAULT_JS_FILE_NAME = "schema_doc.min.js"

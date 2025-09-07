@@ -15,8 +15,10 @@ from json_schema_for_humans.const import (
     OFFLINE_CSS_FILE_NAMES,
     OFFLINE_FONT_FILE_NAMES,
     OFFLINE_JS_FILE_NAMES,
+    BS5_CSS_FOLDER,
+    BS5_JS_FOLDER,
     DocumentationTemplate,
-    FileLikeType,
+    FileLikeType
 )
 
 DEFAULT_PROPERTIES_TABLE_COLUMNS = [
@@ -60,6 +62,22 @@ class GenerationConfiguration:
     with_footer: bool = True
     footer_show_time: bool = True
 
+    # BS5 Parameters
+    bs5_js: bool = True
+    bs_version: str = "5.3.6"
+    offline: bool = True
+
+    footer: bool = True
+    footer_sticky: bool = True
+
+    navbar: bool = True
+    navbar_sticky: bool = True
+
+    themes: bool = bs5_js
+    theme_style: str = "dark"
+
+    search: bool = bs5_js
+
     def __post_init__(self) -> None:
         self.markdown_options = self.markdown_options or {}
         default_markdown_options: Dict[str, Any] = {
@@ -94,6 +112,10 @@ class GenerationConfiguration:
             files_to_copy.extend(OFFLINE_JS_FILE_NAMES)
             files_to_copy.extend(OFFLINE_CSS_FILE_NAMES)
             files_to_copy.extend(OFFLINE_FONT_FILE_NAMES)
+        elif self.template_name == "bs5":
+            # TODO - Check if we are offline/no JS
+            files_to_copy.extend(BS5_CSS_FOLDER)
+            files_to_copy.extend(BS5_JS_FOLDER)
         else:
             if self.copy_js:
                 files_to_copy.append(DEFAULT_JS_FILE_NAME)
@@ -129,7 +151,8 @@ class GenerationConfiguration:
             Path(__file__).parent
             / "templates"
             / self.template_name
-            / f"base.{DocumentationTemplate(self.template_name).result_extension}"
+            # / f"base.{DocumentationTemplate(self.template_name).result_extension}"
+            / f"base.{"md" if self.result_extension == "md" else "jinja"}" # TODO - Need to figure out how to get this to work with the correct extension
         )
 
     @property

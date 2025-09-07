@@ -1,0 +1,35 @@
+<div class="example">
+    <h4>
+        <div class="badge bg-secondary">Example{% if examples|length > 1 %}s{% endif %}:</div>
+    </h4>
+
+    {%- for example in examples -%}
+        {%- set example_id = schema.html_id ~ "_ex" ~ loop.index -%}
+        {%- set example_is_long = config.collapse_long_examples and example is not description_short -%}
+        {% macro examples_body() %}
+            <pre id="{{ example_id }}" class="{% if example_is_long %}collapse{% endif %}">
+        {%- if not examples_as_yaml -%}
+            {{ example }}
+        {%- else -%}
+            {{ example | highlight_yaml_example }}
+        {%- endif -%}
+
+    </pre>
+        {% endmacro %}
+
+        {% if example_is_long %}
+            <div class="accordion-button mt-3 p-3 bg-body-secondary border rounded-3 examples collapsed"
+                 data-bs-toggle="collapse"
+                 data-bs-target="#{{ example_id }}"
+                 aria-controls="{{ example_id }}">
+                {{ examples_body() }}
+            </div>
+
+        {% else %}
+            <div class="mt-3 p-3 bg-body-secondary border rounded-3 examples">
+                {{ examples_body() }}
+            </div>
+        {% endif %}
+
+    {%- endfor -%}
+</div>

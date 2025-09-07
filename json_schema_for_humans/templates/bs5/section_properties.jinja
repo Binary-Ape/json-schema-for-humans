@@ -1,0 +1,64 @@
+{% set html_id = sub_property.html_id %}
+<div class="accordion bg-body-secondary" id="accordion-{{ html_id }}">
+    <div class="accordion-item collapse show" property="{{ sub_property.property_display_name | escape }}">
+        {% if config.bs5_js %}
+            <button aria-expanded="false" aria-controls="{{ html_id }}"
+                    class="accordion-button collapsed bg-body-secondary"
+                    data-bs-toggle="collapse" data-bs-target="#{{ html_id }}"
+                    id="btn-{{ html_id }}" type="button"
+            >
+        {% else %}
+            <input class="css-collapse" id="cb-{{ html_id }}" type="checkbox" name="{{ html_id }}" autocomplete="off">
+            <label href="#{{ html_id }}" class="accordion-button bg-body-secondary d-flex" for="cb-{{ html_id }}">
+        {% endif %}
+        {%- if sub_property.is_additional_properties -%}
+            <em>
+        {%- endif -%}
+        <span class="me-2 property-name">{{ sub_property.property_display_name | escape }}</span>
+        {%- if sub_property.is_additional_properties -%}
+            </em>
+        {%- endif -%}
+        {%- if sub_property.is_required_property -%}
+            <span class="me-2 badge badge bg-warning required-property">Required</span>
+        {%- endif -%}
+        {%- if sub_property is deprecated or sub_property.kw_deprecated -%}
+            <span class="me-2 badge bg-danger deprecated-property">Deprecated</span>
+        {%- endif -%}
+        {%- if sub_property.is_pattern_property -%}
+            <span class="me-2 badge bg-info pattern-property">Pattern Property</span>
+        {%- endif -%}
+
+        {% if config.bs5_js %}
+            </button>
+        {% else %}
+            </label>
+        {% endif %}
+        <div id="{{ html_id }}"
+             class="accordion-collapse collapse property-definition-div overflow-hidden"
+             property="{{ sub_property.property_name | escape }}"
+             aria-labelledby="heading{{ html_id }}" data-bs-parent="#accordion{{ html_id }}">
+            <div class="accordion-body overflow-hidden">
+                {%- if sub_property.is_pattern_property -%}
+                    <h2 class="handle">
+                        <label>Pattern Property</label>
+                    </h2>
+                    <p>All properties whose name matches the following regular expression must respect the following
+                        conditions</p>
+                    <span class="pattern-value">Property name regular expression: <code>{{ sub_property.property_name | escape }}</code></span>
+                    <br/>
+                {%- endif -%}
+
+                {%- if sub_property.is_additional_properties -%}
+                    {%- if sub_property.is_additional_properties_schema -%}
+                        <p class="additional-properties">Each additional property must conform to the following
+                            schema</p>
+                    {%- else -%}
+                        <p class="additional-properties">Additional Properties of any type are allowed.</p>
+                    {%- endif -%}
+                {%- endif -%}
+
+                {{ content(sub_property) }}
+            </div>
+        </div>
+    </div>
+</div>

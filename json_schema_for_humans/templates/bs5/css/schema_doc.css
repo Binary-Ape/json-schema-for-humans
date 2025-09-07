@@ -1,0 +1,117 @@
+/* region Collapse Tabs - Pure CSS */
+input[type="checkbox"] {
+    position: absolute;
+    z-index: -1;
+}
+
+main .css-collapse ~ .accordion-collapse {
+    display: grid !important;
+    grid-template-rows: 0fr;
+    transition-property: grid-template-rows, display;
+    transition-duration: .5s;
+    transition-timing-function: ease-in-out;
+}
+
+main .css-collapse:checked ~ .accordion-collapse {
+    grid-template-rows: 1fr !important;
+}
+
+.css-collapse:checked ~ .accordion-collapse div {
+    transform: scaleY(100%);
+    transition: transform .25s ease-in-out;
+}
+
+.css-collapse ~ .accordion-collapse div {
+    transform: scaleY(0%);
+    transition: transform .75s ease-in-out;
+}
+
+/* endregion */
+
+/* region Expand/Collapse All */
+
+header:has(#ExpandCollapseButton:checked) ~ main .accordion-collapse {
+    grid-template-rows: 1fr;
+}
+
+header:has(#ExpandCollapseButton:checked) ~ main .accordion-collapse div {
+    transform: scaleY(100%);
+    transition: transform .25s ease-in-out;
+}
+
+/* endregion */
+
+body {
+    font: 1em "Overpass", "Open Sans", Helvetica, sans-serif;
+    font-weight: 300;
+}
+
+.collapse-description-link.collapsed:after {
+    content: '+ Read More';
+}
+
+.collapse-description-link:not(.collapsed):after {
+    content: '- Read Less';
+}
+
+.description {
+    --max-lines: 1;
+    --lh: 1.2rem;
+    line-height: var(--lh);
+}
+
+.description.collapsing {
+    min-height: calc(var(--lh) + .75px) !important;
+}
+
+.description.collapse:not(.show) {
+    max-height: 100px !important;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--max-lines);
+    -webkit-box-orient: vertical;
+}
+
+.examples pre {
+    margin-bottom: 0;
+    color: var(--bs-accordion-btn-color);
+}
+
+.example:has(+ div) {
+    margin-bottom: 1rem;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+pre:has(code) {
+    border-radius: var(--bs-border-radius-lg) !important;
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity)) !important;
+    padding: 1rem !important;
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+}
+
+/* Animations*/
+.pulse {
+    /*animation: pulse-animation 2s ease-in-out infinite;*/
+    animation-fill-mode: both;
+    -webkit-animation: pulse-animation 1s ease-in-out 1;
+}
+
+@keyframes pulse-animation {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,19 @@
+{# Display description #}
+{%- if description -%}
+    {%- if not config.collapse_long_descriptions or description is description_short -%}
+        <div class="description">
+            {{ description }}
+        </div>
+    {%- else -%}
+        <div class="description collapse" id="collapseDescription_{{ schema.html_id }}" aria-expanded="false">
+            {{ description }}
+        </div>
+        <div>
+            <button class="mb-3 btn btn-secondary btn-sm collapse-description-link collapsed"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseDescription_{{ schema.html_id }}" role="button"
+                    aria-expanded="false" aria-controls="collapseDescription{{ schema.html_id }}"
+            ></button>
+        </div>
+    {%- endif -%}
+{%- endif -%}

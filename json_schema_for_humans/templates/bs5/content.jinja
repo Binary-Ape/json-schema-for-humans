@@ -1,0 +1,141 @@
+{% from "macro_restriction.jinja" import restriction with context %}
+
+{%- macro tabbed_section(operator, current_node) -%}
+    {% include "tabbed_section.jinja" %}
+{%- endmacro -%}
+
+{%- macro content(schema, skip_headers=False, skip_title=False, search_bar=False, skip_breadcrumbs=False) -%}
+    {% set keys = schema.keywords %}
+
+    {# Resolve type #}
+    {%- set type_name = schema.type_name -%}
+
+    {% if not skip_headers %}
+        {%- if config.show_breadcrumbs and not skip_breadcrumbs -%}
+            {%- include "breadcrumbs.jinja" -%}
+        {%- endif -%}
+        <div class="title-badges">
+            {%- if schema.title and not skip_title -%}
+                <h4 class="title">{{ schema.title }}{{ " " }}</h4>
+            {%- endif -%}
+
+            {# Display type #}
+            {%- if not schema is combining -%}
+                <h4><span class="badge bg-primary value-type">Type: {{ type_name }}</span></h4>
+            {%- endif -%}
+
+            {%- if schema.format -%}
+                <h4><span class="badge bg-info value-type">Format: {{ schema.format }}</span></h4>
+            {%- endif -%}
+
+            {# Display default #}
+            {%- set default_value = schema.default_value -%}
+            {%- if default_value -%}
+                <h4><span class="badge bg-success default-value">Default: {{ default_value }}</span></h4>
+            {%- endif -%}
+
+            {# Display No Additional Properties #}
+            {%- if schema.explicit_no_additional_properties -%}
+                <span class="badge bg-info value-type">No Additional Properties</span>
+            {%- endif -%}
+
+            {# Display No Additional Items #}
+            {%- if not schema.array_additional_items and schema.type_name == "array" -%}
+                <span class="badge bg-info no-additional">No Additional Items</span>
+            {%- endif -%}
+
+            {%- if schema.title and not skip_title -%}
+            {%- endif -%}
+            {%- if search_bar -%}
+                <input list="prop_name_auto" type="search" id="property_search" class="filter float-end"
+                       placeholder="Property Search"
+                       aria-label="Search" onkeyup="SearchInput(this.value)"/>
+                <datalist id="prop_name_auto">
+                </datalist>
+            {%- endif -%}
+        </div>
+        {%- set description = (schema | get_description) -%}
+        {%- include "section_description.jinja" -%}
+    {%- endif -%}
+
+
+    {%- if schema.should_be_a_link(config) -%}
+        <a href="#{{ schema.links_to.html_id }}" onclick="anchorLink('{{ schema.links_to.html_id }}')" class="ref-link">Same
+            definition as {{ schema.links_to.link_name }}</a>
+    {%- elif schema.refers_to -%}
+        {{ content(schema.refers_to_merged, True) }}
+    {%- else -%}
+
+        {# Show the requested type(s) #}
+        {% include "badge_type.jinja" %}
+
+        {# Show array restrictions #}
+        {%- if type_name.startswith("array") -%}
+            {% include "section_array.jinja" %}
+        {%- endif -%}
+
+        {# Display examples #}
+        {%- set examples = schema.examples -%}
+        {%- if examples -%}
+            {% include "section_examples.jinja" %}
+        {%- endif -%}
+
+        {# Combining: allOf, anyOf, oneOf, not #}
+        {%- if schema.kw_all_of -%}
+            <div class="all-of-value"
+                 id="{{ schema.kw_all_of.html_id }}">{{ tabbed_section("allOf", schema.kw_all_of) }}</div>
+        {%- endif -%}
+        {%- if schema.kw_any_of -%}
+            <div class="any-of-value"
+                 id="{{ schema.kw_any_of.html_id }}">{{ tabbed_section("anyOf", schema.kw_any_of) }}</div>
+        {%- endif -%}
+        {%- if schema.kw_one_of -%}
+            <div class="one-of-value"
+                 id="{{ schema.kw_one_of.html_id }}">{{ tabbed_section("oneOf", schema.kw_one_of) }}</div>
+        {%- endif -%}
+        {%- if schema.kw_not -%}
+            {% include "section_not.jinja" %}
+        {%- endif -%}
+
+        {# Enum and const #}
+        {%- if schema.kw_enum -%}
+            <div class="enum-value" id="{{ schema.kw_enum.html_id }}">
+                <h4>Must be one of:</h4>
+                <ul class="list-group">
+                    {%- for enum_choice in schema.kw_enum.array_items -%}
+                        <li class="list-group-item enum-item">
+                            {%- if schema.kw_meta_enum -%}<strong>{%- endif -%}
+                            {{ enum_choice.literal | python_to_json }}
+                            {%- if schema.kw_meta_enum -%}</strong>
+                                : {{ (schema.enum_description(enum_choice.literal) | get_description_literal) }}
+                            {%- endif -%}
+                        </li>
+                    {%- endfor -%}
+                </ul>
+            </div>
+        {%- endif -%}
+        {%- if schema.is_const -%}
+            <span class="const-value"
+                  id="{{ schema.html_id }}_const">Specific value: <code>{{ schema.const_value | python_to_json }}</code></span>
+        {%- endif -%}
+
+        {# Pattern (Regular Expression) #}
+        {%- if schema.kw_pattern -%}
+            <span class="pattern-value"
+                  id="{{ schema.kw_pattern.html_id }}">Must match regular expression: <code>{{ schema.kw_pattern.literal | escape }}</code></span>
+        {%- endif -%}
+
+        {# Conditional subschema, or if-then-else section #}
+        {%- if schema.has_conditional -%}
+            {% include "section_conditional_subschema.jinja" %}
+        {%- endif -%}
+
+        {# Required properties that are not defined under "properties" They will only be listed #}
+        {% include "section_undocumented_required_properties.jinja" %}
+
+        {# Properties, pattern properties, additional properties #}
+        {%- for sub_property in schema.iterate_properties -%}
+            {% include "section_properties.jinja" %}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endmacro -%}

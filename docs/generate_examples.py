@@ -20,7 +20,7 @@ from json_schema_for_humans.generation_configuration import \
 EXAMPLES_DIR = os.path.join(CURRENT_DIR, "examples")
 JSON_EXAMPLES_DIR = os.path.join(EXAMPLES_DIR, "cases")
 
-TEMPLATE_NAMES = ["js", "js_offline", "flat", "md", "md_nested"]
+TEMPLATE_NAMES = ["js", "js_offline", "flat", "md", "md_nested", "bs5"]
 if len(sys.argv) >= 2:
     TEMPLATE_NAMES = [sys.argv[1]]
 
@@ -45,7 +45,6 @@ Here you will find the JSON schema and generated doc for the generation configur
 These parameters can be provided with a json or yaml file, through the CLI, or through a `GenerationConfiguration` object if calling by code.
 
 """
-
 
 EXAMPLES_FOOTER_TEMPLATE = """
 
@@ -88,6 +87,62 @@ class ExampleConfiguration(TypedDict):
 
 
 CONFIGURATIONS: List[ExampleConfiguration] = [
+    {
+        "title": "BS5 - Online Template",
+        "dir_name": "examples_bs5_online",
+        "config": GenerationConfiguration(
+            minify=False,
+            template_name="bs5",
+            deprecated_from_description=True,
+            expand_buttons=True,
+            footer_show_time=False,
+            bs5_js=True,
+            offline=False
+        ),
+        "md_example_template": MD_EXAMPLE_JS_TEMPLATE,
+    },
+    {
+        "title": "BS5 - Offline Template",
+        "dir_name": "examples_bs5_offline",
+        "config": GenerationConfiguration(
+            minify=False,
+            template_name="bs5",
+            deprecated_from_description=True,
+            expand_buttons=True,
+            footer_show_time=False,
+            bs5_js=True,
+            offline=True
+        ),
+        "md_example_template": MD_EXAMPLE_JS_TEMPLATE,
+    },
+    {
+        "title": "BS5 - CSS Collapse Template",
+        "dir_name": "examples_bs5_css_online",
+        "config": GenerationConfiguration(
+            minify=False,
+            template_name="bs5",
+            deprecated_from_description=True,
+            expand_buttons=True,
+            footer_show_time=False,
+            bs5_js=False,
+            offline=False
+        ),
+        "md_example_template": MD_EXAMPLE_JS_TEMPLATE,
+    },
+    {
+        "title": "BS5 - CSS Collapse Offline Template",
+        "dir_name": "examples_bs5_css_offline",
+        "config": GenerationConfiguration(
+            minify=False,
+            template_name="bs5",
+            deprecated_from_description=True,
+            expand_buttons=True,
+            footer_show_time=False,
+            bs5_js=False,
+            offline=True
+        ),
+        "md_example_template": MD_EXAMPLE_JS_TEMPLATE,
+    },
     {
         "title": "JS template",
         "dir_name": "examples_js_default",

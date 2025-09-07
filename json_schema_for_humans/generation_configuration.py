@@ -15,8 +15,10 @@ from json_schema_for_humans.const import (
     OFFLINE_CSS_FILE_NAMES,
     OFFLINE_FONT_FILE_NAMES,
     OFFLINE_JS_FILE_NAMES,
+    BS5_CSS_FOLDER,
+    BS5_JS_FOLDER,
     DocumentationTemplate,
-    FileLikeType,
+    FileLikeType
 )
 
 DEFAULT_PROPERTIES_TABLE_COLUMNS = [
@@ -60,6 +62,22 @@ class GenerationConfiguration:
     with_footer: bool = True
     footer_show_time: bool = True
 
+    # BS5 Parameters
+    bs5_js: bool = True
+    bs_version: str = "5.3.6"
+    offline: bool = False
+
+    footer: bool = True
+    footer_sticky: bool = True
+
+    navbar: bool = True
+    navbar_sticky: bool = True
+
+    themes: bool = bs5_js
+    theme_style: str = "dark"
+
+    search: bool = bs5_js
+
     def __post_init__(self) -> None:
         self.markdown_options = self.markdown_options or {}
         default_markdown_options: Dict[str, Any] = {
@@ -94,6 +112,11 @@ class GenerationConfiguration:
             files_to_copy.extend(OFFLINE_JS_FILE_NAMES)
             files_to_copy.extend(OFFLINE_CSS_FILE_NAMES)
             files_to_copy.extend(OFFLINE_FONT_FILE_NAMES)
+        elif self.template_name == "bs5":
+            # TODO - Also add logic for not including JavaScript/CSS from bootstrap if we are online
+            if self.bs5_js:
+                files_to_copy.extend(BS5_JS_FOLDER)
+            files_to_copy.extend(BS5_CSS_FOLDER)
         else:
             if self.copy_js:
                 files_to_copy.append(DEFAULT_JS_FILE_NAME)
@@ -108,6 +131,10 @@ class GenerationConfiguration:
     @property
     def template_is_html(self) -> bool:
         return self.result_extension == "html"
+
+    @property
+    def template_is_jinja(self) -> bool:
+        return self.result_extension == "jinja"
 
     @property
     def result_extension(self) -> str:
@@ -129,7 +156,7 @@ class GenerationConfiguration:
             Path(__file__).parent
             / "templates"
             / self.template_name
-            / f"base.{DocumentationTemplate(self.template_name).result_extension}"
+            / f"base.{DocumentationTemplate(self.template_name).template_extension()}"
         )
 
     @property

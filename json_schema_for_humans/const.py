@@ -33,6 +33,7 @@ FileLikeType = Union[TextIO, TextIOWrapper, FileIO]
 
 
 class DocumentationTemplate(Enum):
+    BS5 = "bs5"
     FLAT = "flat"
     JS = "js"
     JS_OFFLINE = "js_offline"
@@ -41,14 +42,22 @@ class DocumentationTemplate(Enum):
 
     @property
     def result_extension(self) -> str:
-        if self in [self.FLAT, self.JS, self.JS_OFFLINE]:
-            return "html"
         if self in [self.MD, self.MD_NESTED]:
             return "md"
-        return "html"
+        else:
+            return "html"
 
-
-DEFAULT_TEMPLATE_FILE_NAME = "base.html"
+    def template_extension(self) -> str:
+        if self in [self.MD, self.MD_NESTED]:
+            return "md"
+        elif self in [self.BS5]:
+            return "jinja"
+        else:
+            return "html"
+BS5_CSS_FOLDER = ["css"]
+BS5_FONT_FOLDER = ["css/font"]
+BS5_THEMES_FOLDER = ["css/themes"]
+BS5_JS_FOLDER = ["js"]
 
 DEFAULT_CSS_FILE_NAME = "schema_doc.css"
 DEFAULT_JS_FILE_NAME = "schema_doc.min.js"

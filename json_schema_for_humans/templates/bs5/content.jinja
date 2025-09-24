@@ -14,6 +14,7 @@
         {%- if config.show_breadcrumbs and not skip_breadcrumbs -%}
             {%- include "breadcrumbs.jinja" -%}
         {%- endif -%}
+
         <div class="title-badges">
             {%- if schema.title and not skip_title -%}
                 <h4 class="title">{{ schema.title }}{{ " " }}</h4>
@@ -54,6 +55,15 @@
                 </datalist>
             {%- endif -%}
         </div>
+
+        {%- if schema.is_additional_properties -%}
+            {%- if schema.is_additional_properties_schema -%}
+                <p class="additional-properties">Each additional property must conform to one of the above types. </p>
+            {%- else -%}
+                <p class="additional-properties">Additional Properties of any type are allowed.</p>
+            {%- endif -%}
+        {%- endif -%}
+
         {%- set description = (schema | get_description) -%}
         {%- include "section_description.jinja" -%}
     {%- endif -%}

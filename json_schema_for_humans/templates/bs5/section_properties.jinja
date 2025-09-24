@@ -11,9 +11,7 @@
             <input class="css-collapse" id="cb-{{ html_id }}" type="checkbox" name="{{ html_id }}" autocomplete="off">
             <label href="#{{ html_id }}" class="accordion-button bg-body-secondary d-flex" for="cb-{{ html_id }}">
         {% endif %}
-        {%- if sub_property.is_additional_properties -%}
-            <em>
-        {%- endif -%}
+        {%- if sub_property.is_additional_properties -%} <em> {%- endif -%}
         <span class="me-2 property-name">{{ sub_property.property_display_name | escape }}</span>
         {%- if sub_property.is_additional_properties -%}
             </em>
@@ -47,16 +45,6 @@
                     <span class="pattern-value">Property name regular expression: <code>{{ sub_property.property_name | escape }}</code></span>
                     <br/>
                 {%- endif -%}
-
-                {%- if sub_property.is_additional_properties -%}
-                    {%- if sub_property.is_additional_properties_schema -%}
-                        <p class="additional-properties">Each additional property must conform to the following
-                            schema</p>
-                    {%- else -%}
-                        <p class="additional-properties">Additional Properties of any type are allowed.</p>
-                    {%- endif -%}
-                {%- endif -%}
-
                 {{ content(sub_property) }}
             </div>
         </div>

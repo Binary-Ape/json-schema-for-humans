@@ -2,9 +2,16 @@
 {%- if operator == "allOf" -%}
     {%- set tab_label = "Requirement" -%}
 {%- endif -%}
-<ul class="nav nav-tabs" id="tabs{{ current_node.html_id }}_{{ operator }}" role="tablist">
+{% if not config.bs5_js %}
     {%- for node in current_node.array_items -%}
-        <li class="nav-item" role="presentation">
+        <input class="nav-link" id="{{ node.html_id }}" type="radio" name="{{ current_node.html_id }}">
+    {% endfor %}
+{% endif %}
+<div class="nav nav-tabs" id="tabs{{ current_node.html_id }}_{{ operator }}" role="tablist">
+    {%- for node in current_node.array_items -%}
+        {#  ====================  JAVASCRIPT or CSS headers are here  ====================  #}
+        {% if config.bs5_js %}
+            {#      Javascript/Bootstrap       #}
             <button class="nav-link {% if loop.index == 1 %}active{% endif %}" id="{{ node.html_id }}"
                     data-bs-toggle="tab"
                     data-bs-target="#tab-pane_{{ node.html_id }}" type="button" role="tab"
@@ -12,12 +19,19 @@
                     aria-selected="{% if loop.index == 1 -%}true{% else %}false{% endif -%}">
                 {{ node.definition_name or tab_label ~ " " ~ loop.index }}
             </button>
-        </li>
+        {% else %}
+            {#      CSS Switch      #}
+            <label href="#{{ node.html_id }}" class="nav-link"
+                   for="{{ node.html_id }}">
+                {{ node.definition_name or tab_label ~ " " ~ loop.index }}
+            </label>
+        {% endif %}
+        {#  ================================================================================  #}
     {%- endfor -%}
-</ul>
+</div>
 <div class="tab-content card">
     {%- for node in current_node.array_items -%}
-        <div class="tab-pane fade card-body {% if loop.index == 1 -%}show active{% endif -%}"
+        <div class="tab-pane fade card-body {% if loop.index == 1 and config.bs5_js -%}show active{% endif -%}"
              id="tab-pane_{{ node.html_id }}" role="tabpanel" aria-labelledby="tab-pane_{{ node.html_id }}-tab">
             {{ content(node, skip_breadcrumbs=True) }}
         </div>

@@ -1,9 +1,47 @@
-/* region Collapse Tabs - Pure CSS */
-input[type="checkbox"] {
+input[type="checkbox"], input[type="radio"] {
     position: absolute;
     z-index: -1;
+    visibility: hidden;
 }
 
+/* region CSS Bootstrap Tabs - Pure CSS */
+.tab-content {
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+}
+
+.nav-link:checked + label{
+    color: var(--bs-nav-tabs-link-active-color);
+    background-color: var(--bs-nav-tabs-link-active-bg);
+    border-color: var(--bs-nav-tabs-link-active-border-color);
+}
+
+/*TODO - Need to see if we can automatically generate this data for the CSS Tabs*/
+.any-of-value input:nth-of-type(1):checked ~ .nav-tabs .nav-link:nth-of-type(1),
+.any-of-value input:nth-of-type(2):checked ~ .nav-tabs .nav-link:nth-of-type(2),
+.any-of-value input:nth-of-type(3):checked ~ .nav-tabs .nav-link:nth-of-type(3),
+.any-of-value input:nth-of-type(4):checked ~ .nav-tabs .nav-link:nth-of-type(4),
+.any-of-value input:nth-of-type(5):checked ~ .nav-tabs .nav-link:nth-of-type(5),
+.any-of-value input:nth-of-type(6):checked ~ .nav-tabs .nav-link:nth-of-type(6),
+.any-of-value input:nth-of-type(7):checked ~ .nav-tabs .nav-link:nth-of-type(7)
+{
+    color: var(--bs-nav-tabs-link-active-color);
+    background-color: var(--bs-nav-tabs-link-active-bg);
+    border-color: var(--bs-nav-tabs-link-active-border-color);
+}
+
+.any-of-value input:nth-of-type(1):checked ~ .tab-content .tab-pane:nth-of-type(1),
+.any-of-value input:nth-of-type(2):checked ~ .tab-content .tab-pane:nth-of-type(2),
+.any-of-value input:nth-of-type(3):checked ~ .tab-content .tab-pane:nth-of-type(3),
+.any-of-value input:nth-of-type(4):checked ~ .tab-content .tab-pane:nth-of-type(4),
+.any-of-value input:nth-of-type(5):checked ~ .tab-content .tab-pane:nth-of-type(5){
+    display: block;
+    opacity: 100
+}
+
+/* endregion */
+
+/* region Accordion Collapse - Pure CSS */
 .css-collapse ~ .accordion-collapse {
     display: grid !important;
     grid-template-rows: 0fr;
